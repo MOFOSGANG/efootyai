@@ -83,11 +83,14 @@ app.get('/api/health', (req, res) => {
 if (process.env.NODE_ENV === 'production') {
     app.use(express.static(path.join(__dirname, '../dist')));
 
-    // Front-end routing fallback (skip API routes and actual files like admin.html)
-    app.get('*', (req, res) => {
-        if (!req.path.startsWith('/api') && !req.path.includes('.')) {
-            res.sendFile(path.join(__dirname, '../dist/index.html'));
+    // SPA fallback - serve index.html for any non-API, non-file requests
+    app.get('*', (req, res, next) => {
+        // Skip API routes
+        if (req.path.startsWith('/api')) {
+            return next();
         }
+        // Always serve index.html for SPA routes (let static middleware handle actual files first)
+        res.sendFile(path.join(__dirname, '../dist/index.html'));
     });
 }
 
