@@ -1,0 +1,8 @@
+{
+  "name": "eFooTyAi",
+  "description": "The ultimate eFootball meta-hub combining AI-driven squad analysis, tactical playbooks, and real-time player database enrichment.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
