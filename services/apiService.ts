@@ -4,7 +4,7 @@
  * Falls back to localStorage for offline resilience
  */
 
-const API_BASE = 'http://localhost:3001/api';
+const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3001/api' : '/api';
 
 // Token management
 const getToken = (): string | null => localStorage.getItem('efooty_token');
