@@ -10,15 +10,27 @@ import { Notification } from './models/Notification.js';
 
 dotenv.config();
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/efootyai';
-
 export async function connectDB() {
+  const MONGODB_URI = process.env.MONGODB_URI;
+
+  if (!MONGODB_URI) {
+    console.error('❌ CRITICAL ERROR: MONGODB_URI environment variable is not defined!');
+    console.log('Please add MONGODB_URI to your Render Environment settings.');
+    // In production, we don't want to just exit(1) immediately without a message
+    return;
+  }
+
   try {
-    await mongoose.connect(MONGODB_URI);
+    console.log('⏳ Connecting to MongoDB...');
+    await mongoose.connect(MONGODB_URI, {
+      serverSelectionTimeoutMS: 5000 // Fast fail for logs
+    });
     console.log('🚀 MongoDB Connected Successfully');
   } catch (err) {
     console.error('❌ MongoDB Connection Error:', err.message);
-    process.exit(1);
+    if (process.env.NODE_ENV === 'production') {
+      console.error('Check your MongoDB Atlas whitelist and connection string.');
+    }
   }
 }
 

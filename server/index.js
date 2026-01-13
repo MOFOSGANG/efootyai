@@ -9,10 +9,18 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+console.log('--- SERVER STARTUP DIAGNOSTIC ---');
+console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('PORT:', process.env.PORT);
 
-dotenv.config({ path: path.join(__dirname, '..', '.env.local') });
+// Load environment variables
+if (process.env.NODE_ENV !== 'production') {
+    dotenv.config({ path: path.join(__dirname, '..', '.env.local') });
+    console.log('DEV MODE: Loading variables from .env.local');
+} else {
+    dotenv.config(); // Load from system environment in production
+    console.log('PROD MODE: Using system environment variables');
+}
 
 import { connectDB } from './db.js';
 

@@ -8,8 +8,7 @@
     "build": "vite build",
     "start": "node server/index.js",
     "start:dev": "concurrently \"npm run start:server\" \"npm run dev\"",
-    "start:server": "node server/index.js",
-    "prestart": "npm run build"
+    "start:server": "node server/index.js"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^5.0.0",
