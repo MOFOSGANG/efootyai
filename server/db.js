@@ -110,3 +110,5 @@ export const db = {
     return notif.save();
   }
 };
+
+export default db;
