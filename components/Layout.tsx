@@ -22,12 +22,13 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, user
     { id: 'dashboard', label: 'Feed', icon: '📊' },
     { id: 'match', label: 'Match', icon: '⚔️' },
     { id: 'tactics', label: 'Tactics', icon: '📋' },
-    { id: 'community', label: 'Hub', icon: '🌐' }
+    { id: 'community', label: 'Hub', icon: '🌐' },
+    { id: 'leaderboard', label: 'Rankings', icon: '🏆' }
   ];
 
   return (
     <div className={`min-h-screen flex flex-col md:flex-row overflow-hidden transition-colors duration-500 ${theme === 'light' ? 'bg-slate-50' : 'bg-[#020617]'}`}>
-      
+
       {/* SQUAD BUILDER DRAWER */}
       <MySquadDrawer isOpen={isSquadOpen} onClose={() => setIsSquadOpen(false)} theme={theme} />
 
@@ -38,8 +39,8 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, user
             <h1 className="text-4xl font-gaming gradient-text tracking-tighter">eFooTyAi</h1>
             <p className="text-[8px] text-slate-500 uppercase tracking-[0.2em] font-bold">Intelligence Hub</p>
           </div>
-          <button 
-            onClick={() => setIsSquadOpen(true)} 
+          <button
+            onClick={() => setIsSquadOpen(true)}
             className="p-2 hover:bg-white/5 rounded-lg transition-colors text-xl"
             title="Squad Builder"
           >
@@ -52,11 +53,10 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, user
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`w-full text-left px-5 py-3 rounded-xl flex items-center gap-4 transition-all ${
-                activeTab === tab.id 
-                  ? 'bg-green-600/10 text-green-500 border border-green-500/40 shadow-sm' 
+              className={`w-full text-left px-5 py-3 rounded-xl flex items-center gap-4 transition-all ${activeTab === tab.id
+                  ? 'bg-green-600/10 text-green-500 border border-green-500/40 shadow-sm'
                   : `text-slate-500 hover:text-green-500 ${theme === 'light' ? 'hover:bg-slate-50' : 'hover:bg-white/5'}`
-              }`}
+                }`}
             >
               <span className="text-xl">{tab.icon}</span>
               <span className="text-sm font-bold uppercase tracking-widest">{tab.label}</span>
@@ -65,15 +65,15 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, user
         </nav>
 
         <div className="mt-auto pt-6 border-t border-slate-800/10 space-y-4">
-           {user && (
-             <button onClick={onLogout} className="w-full text-left text-[9px] font-black text-red-500 uppercase tracking-widest hover:opacity-70 transition-opacity px-2">
-               Terminate Session
-             </button>
-           )}
-           <button onClick={user ? onOpenProfile : onOpenAuth} className="flex items-center gap-3 px-2 group">
-              <div className="w-1.5 h-1.5 rounded-full bg-slate-400 group-hover:bg-purple-500 transition-colors"></div>
-              <span className="text-[8px] text-slate-500 font-bold uppercase tracking-widest group-hover:text-purple-500">System Identity</span>
+          {user && (
+            <button onClick={onLogout} className="w-full text-left text-[9px] font-black text-red-500 uppercase tracking-widest hover:opacity-70 transition-opacity px-2">
+              Terminate Session
             </button>
+          )}
+          <button onClick={user ? onOpenProfile : onOpenAuth} className="flex items-center gap-3 px-2 group">
+            <div className="w-1.5 h-1.5 rounded-full bg-slate-400 group-hover:bg-purple-500 transition-colors"></div>
+            <span className="text-[8px] text-slate-500 font-bold uppercase tracking-widest group-hover:text-purple-500">System Identity</span>
+          </button>
         </div>
       </aside>
 
@@ -84,7 +84,7 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, user
           <h1 className="text-2xl font-gaming gradient-text tracking-tighter">eFooTyAi</h1>
         </div>
 
-        <button 
+        <button
           onClick={toggleTheme}
           aria-label="Toggle Theme"
           className={`p-2.5 rounded-xl border transition-all shadow-md ${theme === 'light' ? 'bg-white border-slate-200 text-slate-800 hover:bg-slate-50' : 'bg-slate-900 border-slate-800 text-yellow-400 hover:bg-slate-800'}`}
@@ -93,7 +93,7 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, user
         </button>
 
         {user ? (
-          <button 
+          <button
             onClick={onOpenProfile}
             className={`group flex items-center gap-3 border px-4 py-2 rounded-2xl transition-all shadow-lg hover:scale-105 ${theme === 'light' ? 'bg-white border-slate-200' : 'bg-slate-900/60 border-slate-700'}`}
           >
@@ -110,7 +110,7 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, user
             </div>
           </button>
         ) : (
-          <button 
+          <button
             onClick={onOpenAuth}
             className="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl shadow-lg shadow-blue-500/20 uppercase tracking-widest transition-all"
           >
@@ -132,9 +132,8 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, user
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex flex-col items-center gap-1 transition-all ${
-              activeTab === tab.id ? 'text-green-500 scale-110' : 'text-slate-400'
-            }`}
+            className={`flex flex-col items-center gap-1 transition-all ${activeTab === tab.id ? 'text-green-500 scale-110' : 'text-slate-400'
+              }`}
           >
             <span className="text-xl">{tab.icon}</span>
             <span className="text-[8px] font-bold uppercase tracking-tighter">{tab.label}</span>

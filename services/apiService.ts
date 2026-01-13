@@ -212,6 +212,34 @@ export const apiService = {
         });
     },
 
+    // Community
+    async getLeaderboard() {
+        return apiFetch<any[]>('/community/leaderboard');
+    },
+
+    async getUserProfile(username: string) {
+        return apiFetch<any>(`/community/profile/${username}`);
+    },
+
+    async updateProfile(updates: { bio?: string; efootballName?: string }) {
+        return apiFetch<any>('/community/profile', {
+            method: 'PATCH',
+            body: JSON.stringify(updates)
+        });
+    },
+
+    async likePost(postId: string) {
+        return apiFetch<any>(`/community/like/${postId}`, { method: 'POST' });
+    },
+
+    async unlikePost(postId: string) {
+        return apiFetch<any>(`/community/unlike/${postId}`, { method: 'POST' });
+    },
+
+    async recordPostView(postId: string) {
+        return apiFetch<void>(`/community/view/${postId}`, { method: 'POST' });
+    },
+
     // Utility
     isBackendAvailable,
     getToken,

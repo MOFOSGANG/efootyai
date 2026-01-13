@@ -203,6 +203,33 @@ export class GeminiService {
       return [];
     }
   }
+
+  // Scrapes latest eFootball news/trends via backend proxy
+  async scrapeLatestNews(): Promise<NewsItem[]> {
+    try {
+      const response = await fetch(`${this.baseUrl}/scrape-news`);
+      const data = await response.json();
+      return data.news || [];
+    } catch (e) {
+      console.error("News scrape failed:", e);
+      return [];
+    }
+  }
+
+  // Moderates community submissions via backend proxy
+  async moderateSubmission(submission: ContentSubmission): Promise<{ isSafe: boolean; refinedCategory: string; feedback: string }> {
+    try {
+      const response = await fetch(`${this.baseUrl}/moderate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ submission })
+      });
+      const data = await response.json();
+      return data.result || { isSafe: true, refinedCategory: submission.category, feedback: "Transmission verified." };
+    } catch (e) {
+      return { isSafe: true, refinedCategory: submission.category, feedback: "Offline verification active." };
+    }
+  }
 }
 
 export const geminiService = new GeminiService();

@@ -40,6 +40,7 @@ export const db = {
   getUserById: (id) => User.findById(id),
   getUserByEmail: (email) => User.findOne({ email }),
   getUserByUsername: (username) => User.findOne({ username }),
+  getLeaderboard: (limit = 10) => User.find({ isAdmin: false }).sort({ 'stats.likesReceived': -1 }).limit(limit),
   saveUser: (userData) => {
     return User.findOneAndUpdate(
       { email: userData.email },
@@ -58,6 +59,41 @@ export const db = {
   },
   updatePost: (id, status) => Post.findByIdAndUpdate(id, { status }, { new: true }),
   deletePost: (id) => Post.findByIdAndDelete(id),
+  likePost: async (postId, userId) => {
+    const post = await Post.findById(postId);
+    if (!post || post.likedBy.includes(userId)) return post;
+
+    // Update post
+    const updatedPost = await Post.findByIdAndUpdate(
+      postId,
+      { $addToSet: { likedBy: userId }, $inc: { likes: 1 } },
+      { new: true }
+    );
+
+    // Update author's stats
+    const author = await User.findOne({ username: updatedPost.author });
+    if (author) {
+      await User.findByIdAndUpdate(author._id, { $inc: { 'stats.likesReceived': 1 } });
+    }
+    return updatedPost;
+  },
+  unlikePost: async (postId, userId) => {
+    const post = await Post.findById(postId);
+    if (!post || !post.likedBy.includes(userId)) return post;
+
+    const updatedPost = await Post.findByIdAndUpdate(
+      postId,
+      { $pull: { likedBy: userId }, $inc: { likes: -1 } },
+      { new: true }
+    );
+
+    const author = await User.findOne({ username: updatedPost.author });
+    if (author) {
+      await User.findByIdAndUpdate(author._id, { $inc: { 'stats.likesReceived': -1 } });
+    }
+    return updatedPost;
+  },
+  recordView: (postId) => Post.findByIdAndUpdate(postId, { $inc: { viewCount: 1 } }, { new: true }),
 
   // Players
   getPlayers: () => Player.find().sort({ rating: -1 }),
@@ -84,10 +120,10 @@ export const db = {
   },
 
   // Squads
-  getSquads: () => Squad.find(),
+  getSquads: (owner) => Squad.find({ owner }),
   saveSquad: (squadData) => {
     return Squad.findOneAndUpdate(
-      { id: squadData.id },
+      { id: squadData.id, owner: squadData.owner },
       squadData,
       { upsert: true, new: true }
     );

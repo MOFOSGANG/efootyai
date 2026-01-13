@@ -71,6 +71,13 @@ export interface User {
   profilePic?: string;
   isAdmin: boolean;
   isVerified: boolean;
+  bio: string;
+  rank: string;
+  stats: {
+    likesReceived: number;
+    postsApproved: number;
+    tacticsShared: number;
+  };
   joinedDate: string;
   status: 'active' | 'suspended';
 }
@@ -105,5 +112,8 @@ export interface NewsItem {
   timestamp: string;
   author: string;
   thumbnail?: string;
+  likedBy?: string[];
+  likes: number;
+  viewCount?: number;
   status: 'pending' | 'approved';
 }

@@ -9,10 +9,10 @@ import { authenticate, optionalAuth } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// GET /api/squads - List squads
-router.get('/', optionalAuth, async (req, res) => {
+// GET /api/squads - List squads for current user
+router.get('/', authenticate, async (req, res) => {
     try {
-        const squads = await db.getSquads();
+        const squads = await db.getSquads(req.user.username);
         res.json(squads);
     } catch (err) {
         console.error('Get squads error:', err);
@@ -28,6 +28,7 @@ router.put('/:id', authenticate, async (req, res) => {
 
         const squadData = {
             id,
+            owner: req.user.username,
             name,
             manager,
             coachSkill,

@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { sharedStore } from '../sharedStore';
+import { apiService } from '../services/apiService';
 import { Squad, SquadMember } from '../types';
 import { geminiService } from '../services/geminiService';
 
@@ -22,7 +22,18 @@ const MySquadDrawer: React.FC<MySquadDrawerProps> = ({ isOpen, onClose, theme })
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   useEffect(() => {
-    setSquads(sharedStore.getSquads());
+    const fetchSquads = async () => {
+      try {
+        const data = await apiService.getSquads();
+        // Ensure we always have 3 slots as per original design
+        const slots = ['1', '2', '3'].map(id => {
+          const existing = data.find(s => s.id === id);
+          return existing || { id, name: `Squad ${id}`, manager: 'TBA', players: [] };
+        });
+        setSquads(slots);
+      } catch (err) { console.error("Squad sync failed"); }
+    };
+    if (isOpen) fetchSquads();
   }, [isOpen]);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, squadId: string) => {
@@ -51,7 +62,7 @@ const MySquadDrawer: React.FC<MySquadDrawerProps> = ({ isOpen, onClose, theme })
         });
         setSquads(updatedSquads);
         const target = updatedSquads.find(s => s.id === squadId);
-        if (target) sharedStore.saveSquad(target);
+        if (target) apiService.updateSquad(target.id, target);
       } catch (err) {
         alert("AI Scan failed. Please check your image quality.");
       } finally {
@@ -65,7 +76,7 @@ const MySquadDrawer: React.FC<MySquadDrawerProps> = ({ isOpen, onClose, theme })
     const updated = squads.map(s => s.id === squadId ? { ...s, [field]: value } : s);
     setSquads(updated);
     const target = updated.find(s => s.id === squadId);
-    if (target) sharedStore.saveSquad(target);
+    if (target) apiService.updateSquad(target.id, target);
   };
 
   const updatePlayerManual = (squadId: string, index: number, field: keyof SquadMember, value: any) => {
@@ -79,7 +90,7 @@ const MySquadDrawer: React.FC<MySquadDrawerProps> = ({ isOpen, onClose, theme })
     });
     setSquads(updated);
     const target = updated.find(s => s.id === squadId);
-    if (target) sharedStore.saveSquad(target);
+    if (target) apiService.updateSquad(target.id, target);
   };
 
   const addPlayer = (squadId: string) => {
@@ -174,10 +185,10 @@ const MySquadDrawer: React.FC<MySquadDrawerProps> = ({ isOpen, onClose, theme })
                         key={style}
                         onClick={() => updateSquadManual(squad.id, 'coachSkill', style)}
                         className={`px-3 py-2 rounded-xl text-[9px] font-black uppercase transition-all ${squad.coachSkill === style
-                            ? 'bg-green-600 text-white shadow-lg shadow-green-500/20'
-                            : theme === 'light'
-                              ? 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                              : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+                          ? 'bg-green-600 text-white shadow-lg shadow-green-500/20'
+                          : theme === 'light'
+                            ? 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                            : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
                           }`}
                       >
                         {style}
@@ -201,7 +212,7 @@ const MySquadDrawer: React.FC<MySquadDrawerProps> = ({ isOpen, onClose, theme })
                           );
                           setSquads(updated);
                           const target = updated.find(s => s.id === squad.id);
-                          if (target) sharedStore.saveSquad(target);
+                          if (target) apiService.updateSquad(target.id, target);
                         }}
                         className="bg-red-600/80 backdrop-blur px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-red-500 transition-colors"
                       >
@@ -290,7 +301,7 @@ const MySquadDrawer: React.FC<MySquadDrawerProps> = ({ isOpen, onClose, theme })
         </div>
 
         <div className="p-8 shrink-0 border-t border-slate-800/20 bg-inherit text-[8px] text-center text-slate-600 font-black uppercase tracking-[0.3em]">
-          Builder Module ACTIVE // {sharedStore.getMetaVersion()}
+          Builder Module ACTIVE // v5.1.0-REVOLUTION
         </div>
       </aside>
     </div>

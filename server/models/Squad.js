@@ -7,7 +7,8 @@ const squadMemberSchema = new mongoose.Schema({
 });
 
 const squadSchema = new mongoose.Schema({
-    id: { type: String, required: true, unique: true }, // Keeping ID for frontend compatibility
+    id: { type: String, required: true }, // Slot ID (e.g. '1', '2', '3')
+    owner: { type: String, required: true }, // Username of the owner
     name: { type: String, required: true },
     manager: { type: String, default: 'TBA' },
     coachSkill: { type: String },

@@ -37,6 +37,7 @@ import alertsRoutes from './routes/alerts.js';
 import notificationsRoutes from './routes/notifications.js';
 import syncRoutes from './routes/sync.js';
 import aiRoutes from './routes/ai.js';
+import communityRoutes from './routes/community.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -69,6 +70,7 @@ app.use('/api/alerts', alertsRoutes);
 app.use('/api/notifications', notificationsRoutes);
 app.use('/api/sync', syncRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/community', communityRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
